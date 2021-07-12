@@ -1,6 +1,9 @@
 import React, { Component } from "react";
+import { Link, Route } from "react-router-dom";
 import { Layout, Menu } from "antd";
-import { nanoid } from "nanoid";
+import Home from "./components/Home";
+
+// import { nanoid } from "nanoid";
 import "./App.less";
 import {
   MenuUnfoldOutlined,
@@ -16,9 +19,34 @@ export default class App extends Component {
   state = {
     collapsed: false,
     menuList: [
-      { id: nanoid(), name: "个人中心", icon: UserOutlined },
-      { id: nanoid(), name: "摄影", icon: VideoCameraOutlined },
-      { id: nanoid(), name: "上传", icon: UploadOutlined },
+      {
+        id: 1,
+        name: "个人中心",
+        icon: UserOutlined,
+        children: [
+          { id: 12, name: "二级菜单1", icon: AppstoreOutlined, to: "/home" },
+          { id: 13, name: "二级菜单2", icon: AppstoreOutlined, to: "/home" },
+        ],
+      },
+      {
+        id: 2,
+        name: "摄影",
+        icon: VideoCameraOutlined,
+        children: [
+          { id: 22, name: "二级摄影1", icon: AppstoreOutlined, to: "/home" },
+          { id: 23, name: "二级摄影2", icon: AppstoreOutlined, to: "/home" },
+        ],
+      },
+      {
+        id: 3,
+        name: "上传",
+        icon: UploadOutlined,
+        to: "/home",
+        children: [
+          //   { id: 32, name: "二级上传1", icon: AppstoreOutlined },
+          //   { id: 33, name: "二级上传2", icon: AppstoreOutlined },
+        ],
+      },
     ],
   };
   toggle = (v) => {
@@ -39,15 +67,25 @@ export default class App extends Component {
           <p className="logo">LOGO</p>
           <Menu theme="dark" mode="inline" defaultSelectedKeys={["1"]}>
             {menuList.map((item) => {
-              return (
+              return item.children.length ? (
+                <SubMenu key={item.id} icon={<item.icon />} title={item.name}>
+                  {item.children.map((item) => {
+                    return (
+                      <Menu.Item key={item.id} icon={<item.icon />}>
+                        <Link to={item.to}>{item.name}</Link>
+                      </Menu.Item>
+                    );
+                  })}
+                </SubMenu>
+              ) : (
                 <Menu.Item key={item.id} icon={<item.icon />}>
-                  {item.name}
+                  <Link to={item.to}>{item.name}</Link>
                 </Menu.Item>
               );
             })}
-            <SubMenu key="111" title="一级菜单" icon={<AppstoreOutlined />}>
+            {/* <SubMenu key="111" title="一级菜单" icon={<AppstoreOutlined />}>
               <Menu.Item key="222">子菜单项</Menu.Item>
-            </SubMenu>
+            </SubMenu> */}
           </Menu>
         </Sider>
         <Layout>
@@ -60,7 +98,9 @@ export default class App extends Component {
               }
             )}
           </Header>
-          <Content className="layout-content">Content</Content>
+          <Content className="layout-content">
+            <Route path="/home" component={Home} />
+          </Content>
           {/* <Footer>Footer</Footer> */}
         </Layout>
       </Layout>
